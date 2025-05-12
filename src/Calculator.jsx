@@ -1,45 +1,31 @@
 import React, { useState } from "react";
+import { evaluate } from "mathjs";
 import "./Calculator.css";
 
 const Calculator = () => {
-  const [input, setInput] = useState("");  // Stores the user input
-  const [output, setOutput] = useState("");  // Stores the result
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
 
-  // When a button is clicked, add that value to the input
   const handleClick = (value) => {
-    setInput(input + value);
+    setInput((prev) => prev + value);
   };
 
-  // To calculate the result
   const handleResult = () => {
     try {
-      setOutput(calculateResult(input));  // Call the function to get the result
+      const result = evaluate(input);
+      setOutput(result);
     } catch (e) {
-      setOutput("Error");  // If something goes wrong, show "Error"
+      setOutput("Error");
     }
   };
 
-  // Clears the input and output
   const handleClear = () => {
     setInput("");
     setOutput("");
   };
 
-  // Removes the last character in the input
   const handleBackspace = () => {
-    setInput(input.slice(0, -1));
-  };
-
-  // This function safely calculates the result
-  const calculateResult = (expression) => {
-    // Remove anything that's not a number or valid operator
-    const sanitizedExpression = expression
-      .replace(/[^-()\d/*+.]/g, '') // Only allow numbers and operators
-      .replace(/([+\-*/])\1+/g, '$1') // Remove consecutive operators like ++
-      .replace(/^\+|\+$/g, ''); // Remove leading or trailing plus signs
-    
-    // Calculate and return the result
-    return new Function('return ' + sanitizedExpression)();
+    setInput((prev) => prev.slice(0, -1));
   };
 
   return (
